@@ -43,8 +43,23 @@ const deleteButterfly = async(req, res) => {
     }
 }
 //POST one butterfly
-const createButterfly = async() => {
-    
+const newButterfly = async(req, res) => {
+    try {
+        const { name, commonName, scientificName, family, region, threatLevel } = req.body;
+        const butterfly = await 
+        ButterflyModel.create({
+            name: name,
+            commonName: commonName,
+            scientificName,
+            family: family,
+            region: region,
+            threatLevel
+        });
+        return res.status(201).json({ message: "Butterfly created succesfully", butterfly });
+    } catch (error) {
+        res.status(500).json({ message:"Server error", error});
+    }
+
 }
 //UPDATE one butterfly
 const updateButterfly = async() => {
