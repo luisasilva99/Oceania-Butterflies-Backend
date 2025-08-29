@@ -2,27 +2,57 @@ import express from "express";
 import butterflyRoutes from "./routes/butterflyRoutes.js";
 import db_connection from "./database/db_connection.js";
 import ButterflyModel from "./models/ButterflyModel.js";
+import cors from "cors"; // para permitir peticiones desde cualquier origen (el frontend)
 
 export const app = express();
 
+// Middleware
+app.use(cors()); //permite peticiones desde cualquier dominio
+app.use(express.json()); // Para leer JSON en peticiones
+app.use(express.urlencoded({ extended: true })); // Para formularios
+
+// Ruta raíz
 app.get("/", (req, res) => {
-  res.send("Hello Api!");
+  res.send("🦋 Butterfly API - ¡Bienvenido!");
 });
 
-app.use(express.json());
-app.use('/books', butterflyRoutes);
+// Rutas de la API
+app.use('/butterflies', butterflyRoutes); 
 
-//Autenticacion a la base de datos
-try{
-    await db_connection.authenticate()//autentica la conexion a la base de datos
-    console.log('conected to database 🦋')
-    await ButterflyModel.sync() //sincroniza el modelo con la base de datos
-    db_connection.sync() //sincroniza los modelos con la base de datos
-    console.log('models syncronized')
-    }catch(error){
-    console.log(`error:' ${error}`)
-    }
+// Middleware de manejo de errores (opcional pero recomendado)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
+});
 
-export const server = app.listen(8000, () => {
-  console.log("🚀server up in http://localhost:8000/");
+// Ruta para manejar 404
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
+// Configuración de base de datos
+try {
+    await db_connection.authenticate(); // Autentica la conexión a la base de datos
+    console.log('🦋 Connected to database successfully!');
+    
+    await ButterflyModel.sync(); // Sincroniza el modelo con la base de datos
+    console.log('🦋 Butterfly model synchronized');
+    
+    await db_connection.sync(); // Sincroniza todos los modelos con la base de datos
+    console.log('🦋 All models synchronized');
+    
+} catch (error) {
+    console.error(`❌ Database error: ${error}`);
+    process.exit(1); // Termina la aplicación si no puede conectar a la DB
+}
+
+// Configuración del puerto
+const PORT = process.env.PORT || 8000;
+
+export const server = app.listen(PORT, () => {
+  console.log(`🚀 Butterfly API server running on http://localhost:${PORT}/`);
+  console.log(`📖 Access butterflies at http://localhost:${PORT}/butterflies`);
 });
