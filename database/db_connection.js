@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-
-dotenv.config();
+import '@dotenvx/dotenvx/config';
 
 const db_connection = new Sequelize(
   process.env.DB_NAME,
@@ -16,6 +14,7 @@ const db_connection = new Sequelize(
   }
 );
 
+// node database/db_connection.js
 db_connection.authenticate()
   .then(() => console.log("✅ Conexión establecida con éxito."))
   .catch((err) => console.error("❌ Error al conectar con la base de datos:", err));
