@@ -20,7 +20,7 @@ const initDB = async () => {
     await db_connection.authenticate();
     console.log("✅ Connection established successfully.");
     await db_connection.sync({ alter: true }); // crea las tablas si no existen o las actualiza
-    console.log("✅ Tables synchronized successfully..");
+    console.log("✅ Tables synchronized successfully.");
   } catch (err) {
     console.error("❌ Error connecting to the database:", err);
   }
