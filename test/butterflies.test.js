@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app.js';
 import db_connection from '../database/db_connection.js';
-import ButterflyModel from '../models/ButterflyModel.js';
+import ButterflyModel from '../models/butterflyModel.js';
 
 describe('Oceania-Butterflies-Backend', () => {
     let createdButterflyId;
