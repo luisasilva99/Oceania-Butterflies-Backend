@@ -11,12 +11,21 @@ const db_connection = new Sequelize(
     define: {
       timestamps: false,
     },
+    logging: console.log, 
   }
 );
 
-// node database/db_connection.js
-db_connection.authenticate()
-  .then(() => console.log("✅ Conexión establecida con éxito."))
-  .catch((err) => console.error("❌ Error al conectar con la base de datos:", err));
+const initDB = async () => {
+  try {
+    await db_connection.authenticate();
+    console.log("✅ Connection established successfully.");
+    await db_connection.sync({ alter: true }); // crea las tablas si no existen o las actualiza
+    console.log("✅ Tables synchronized successfully.");
+  } catch (err) {
+    console.error("❌ Error connecting to the database:", err);
+  }
+};
+
+initDB();
 
 export default db_connection;
