@@ -38,7 +38,7 @@ export const validarDatosMariposa = (datos) => {
     const errores = [];
     
     // REVISAR NOMBRE COMÚN (obligatorio)
-    console.log('1️⃣ Revisando nombre común...');
+    console.log('Revisando nombre común...');
     const errorNombreComun = revisarCampoTexto(
         datos.commonName,  // El valor que queremos revisar
         'nombre común',    // Nombre para mostrar en error
@@ -51,7 +51,7 @@ export const validarDatosMariposa = (datos) => {
     }
     
     // REVISAR NOMBRE CIENTÍFICO (obligatorio)
-    console.log('2️⃣ Revisando nombre científico...');
+    console.log('Revisando nombre científico...');
     const errorNombreCientifico = revisarCampoTexto(
         datos.scientificName,
         'nombre científico',
@@ -64,7 +64,7 @@ export const validarDatosMariposa = (datos) => {
     }
     
     // REVISAR FAMILIA (obligatorio)
-    console.log('3️⃣ Revisando familia...');
+    console.log('Revisando familia...');
     const errorFamilia = revisarCampoTexto(
         datos.family,
         'familia',
@@ -76,8 +76,8 @@ export const validarDatosMariposa = (datos) => {
         errores.push({ campo: 'family', mensaje: errorFamilia });
     }
     
-    // REVISAR REGIÓN (opcional - puede estar vacía)
-    console.log('4️⃣ Revisando región...');
+    // REVISAR REGIÓN (opcional)
+    console.log('Revisando región...');
     if (datos.region) { // Solo la revisamos si viene algo
         const errorRegion = revisarCampoTexto(
             datos.region,
@@ -92,7 +92,7 @@ export const validarDatosMariposa = (datos) => {
     }
     
     // REVISAR UBICACIÓN ESPECÍFICA (opcional)
-    console.log('5️⃣ Revisando ubicación específica...');
+    console.log( 'Revisando ubicación específica...');
     if (datos.specificLocation) {
         const errorUbicacion = revisarCampoTexto(
             datos.specificLocation,
@@ -107,7 +107,7 @@ export const validarDatosMariposa = (datos) => {
     }
     
     // REVISAR HÁBITAT (opcional)
-    console.log('6️⃣ Revisando hábitat...');
+    console.log(' Revisando hábitat...');
     if (datos.habitat) {
         const errorHabitat = revisarCampoTexto(
             datos.habitat,
@@ -121,8 +121,8 @@ export const validarDatosMariposa = (datos) => {
         }
     }
     
-    // REVISAR ENVERGADURA (opcional, pero si viene debe ser un número)
-    console.log('7️⃣ Revisando envergadura...');
+    // Revisar medida(opcional, pero si viene debe ser un número)
+    console.log('Revisando envergadura...');
     if (datos.wingspan) {
         // Intentamos convertir a número
         const numeroEnvergadura = parseFloat(datos.wingspan);
@@ -150,8 +150,8 @@ export const validarDatosMariposa = (datos) => {
         }
     }
     
-    // REVISAR UNIDAD DE ENVERGADURA (opcional, pero si viene debe ser válida)
-    console.log('8️⃣ Revisando unidad de envergadura...');
+    // Para revisar la unidad de medida
+    console.log('Revisando unidad de medida...');
     if (datos.wingspanUnit) {
         // Lista de unidades que aceptamos
         const unidadesValidas = ['mm', 'cm', 'm', 'in'];
@@ -166,7 +166,7 @@ export const validarDatosMariposa = (datos) => {
     }
     
     // REVISAR NIVEL DE AMENAZA (obligatorio)
-    console.log('9️⃣ Revisando nivel de amenaza...');
+    console.log('Revisando nivel de amenaza...');
     if (!datos.threatLevel || datos.threatLevel.trim() === '') {
         errores.push({ 
             campo: 'threatLevel', 
@@ -185,7 +185,7 @@ export const validarDatosMariposa = (datos) => {
     }
     
     // REVISAR PLANTAS HOSPEDERAS (obligatorio)
-    console.log('🔟 Revisando plantas hospederas...');
+    console.log('Revisando plantas hospederas...');
     const errorPlantas = revisarCampoTexto(
         datos.hostPlants,
         'plantas hospederas',
@@ -197,7 +197,7 @@ export const validarDatosMariposa = (datos) => {
         errores.push({ campo: 'hostPlants', mensaje: errorPlantas });
     }
     
-    console.log('✅ VALIDACIÓN TERMINADA');
+    console.log('Revision terminada');
     console.log(`Total de errores encontrados: ${errores.length}`);
     
     // Devolvemos la lista de errores
