@@ -1,15 +1,15 @@
 import express from 'express'
 import { 
-    getAllButterflies, 
-    getOneButterfly,
+    getAllButterflies,   
+    getOneButterfly,      
     createButterfly, 
     deleteButterfly, 
-    updateButterfly
+    updateButterfly       
 } from "../controllers/ButterflyController.js"
 
 const butterflyRouter = express.Router()
 
-// GET - Obtener todos las mariposas
+// GET - Obtener todas las mariposas
 butterflyRouter.get('/', getAllButterflies)
 
 // GET - Obtener una mariposa por ID
