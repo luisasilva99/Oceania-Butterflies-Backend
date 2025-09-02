@@ -1,7 +1,7 @@
 import express from 'express'
 import { 
     getAllButterfly, 
-    createButterfl, 
+    createButterfly, 
     deleteButterfly, 
     updateButterfly
 } from "../controllers/ButterflyController.js"
