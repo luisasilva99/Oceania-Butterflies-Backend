@@ -1,10 +1,11 @@
 // Importamos lo necesario
-import { DataTypes} from "sequelize";
+import { DataTypes } from "sequelize";
 import db_connection from "../database/db_connection.js";
+
 const ButterflyModel = db_connection.define('Butterfly', {
     // id de la mariposa
     id:{
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true // Es el id principal
     },
@@ -19,7 +20,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     scientificName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true 
+        unique: true
     }, 
     //Familia
     // Obligatorio
@@ -30,92 +31,98 @@ const ButterflyModel = db_connection.define('Butterfly', {
     //region de la mariposa
     // Region 
     region:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull:false
     },
     //Locacion especifica
     specificLocation:{
         type: DataTypes.STRING,
+        allowNull: true
     },
     //Habitad de la mariposa
     habitat: {
         type: DataTypes.STRING,
+        allowNull: true
     },
     // Tamaño de la ala de la mariposa (es un numero)
     winspan:{
         type: DataTypes.DECIMAL(3,2),
+        allowNull: true
     },
     // Unidad de medida de la ala de la mariposa (cm, mm, m, etc)
     wingspanUnit:{ // Numero 
         type: DataTypes.STRING,
+        allowNull: true
     }, 
     // descripcion de la mariposa
     description:{
         type: DataTypes.TEXT, // Para textos largos
+        allowNull: true
     },
     // estado de conservacion de la mariposa
     conservationStatus:{
         type: DataTypes.STRING,
+        allowNull: true
     },
     // Nivel de preocupacion
     // Obligatorio
     threatLevel:{
         type: DataTypes.STRING,
         allowNull: false
-        
     },
     // cantidad actual de la mariposa
     population:{
         type: DataTypes.STRING,
-    
+        allowNull: true
     },
     // Temporsada de vuelo (es un array de 6 datos)
     flightSeason:{
-        type: DataTypes.STRING,
-        defaultValue: false
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: []
     },
     // Es una array de dos datos
     hostPlants:{
-        type: DataTypes.STRING,
-        allowNull:false
+        type: DataTypes.JSON,
+        allowNull:true,
+        defaultValue: []
     },
     // Es un array de 3 datos
     nectarSources:{
-        type: DataTypes.STRING,
-        defaultValue:false
-// me faltan las validaciones
+        type: DataTypes.JSON,
+        allowNull:true,
+        defaultValue: []
     },
     // Comportamiento de la mariposa (solo texto)
     behavior:{
-        type: DataTypes.STRING,
-        
+        type: DataTypes.TEXT,
+        allowNull:true
     },
     // Coordenadas (es un objeto con )
     coordinates:{
-        type:DataTypes.DECIMAL(2,4),
+        type: DataTypes.JSON,
+        allowNull: true,
         defaultValue:{
             latitude: 0, 
             longitude: 0
         }
-
     },
     // Color primario
     colorPrimary:{
         type: DataTypes.STRING, 
-        
+        allowNull: true
     },
     // Tag (es un array de 4 datos)
     tags:{
         // Esto es como lo principal del codigo, el resto es para confirmacion o manejo de errores
-        type: DataTypes.STRING
-    
+        type: DataTypes.STRING,
+        allowNull: true
     },
     // Es para colocar la foto de la mariposa (se coloca como con uncodigo que le da cloudinary)
     publicId:{
         type: DataTypes.STRING,
-        
-
+        allowNull: true
     }
-
 })
 
-export default ButterflyModel
+export default ButterflyModel;
