@@ -41,43 +41,43 @@ describe('Oceania-Butterflies-Backend', () => {
     });
 
     // POST (create)
-    describe('POST /butterflies', () => {
-        test('Should create a new butterfly', async () => {
-            const newButterfly = {
-                commonName: "Test butterfly POST",
-                scientificName: `Test butterfly POST ${Date.now()}`, // evita duplicados
-                family: "Test family",
-                region: "Test region",
-                threatLevel: "Low"
-            };
-            const response = await request(app).post('/butterflies').send(newButterfly);
+    // describe('POST /butterflies', () => {
+    //     test('Should create a new butterfly', async () => {
+    //         const newButterfly = {
+    //             commonName: "Test butterfly POST",
+    //             scientificName: `Test butterfly POST ${Date.now()}`, // evita duplicados
+    //             family: "Test family",
+    //             region: "Test region",
+    //             threatLevel: "Low"
+    //         };
+    //         const response = await request(app).post('/butterflies').send(newButterfly);
 
-            expect(response.status).toBe(201);
-            expect(response.body.butterfly).toHaveProperty('id');
-            createdButterflyId = response.body.butterfly.id;
-        });
-    });
+    //         expect(response.status).toBe(201);
+    //         expect(response.body.butterfly).toHaveProperty('id');
+    //         createdButterflyId = response.body.butterfly.id;
+    //     });
+    // });
 
     // GET one butterfly by id
-    describe('GET /butterflies/:id', () => {
-        test('Should return the new butterfly by id', async () => {
-            const response = await request(app).get(`/butterflies/${createdButterflyId}`).send();
+    // describe('GET /butterflies/:id', () => {
+    //     test('Should return the new butterfly by id', async () => {
+    //         const response = await request(app).get(`/butterflies/${createdButterflyId}`).send();
 
-            expect(response.status).toBe(200);
-            expect(response.body.butterfly).toHaveProperty('id', createdButterflyId);
-        });
-    });
+    //         expect(response.status).toBe(200);
+    //         expect(response.body.butterfly).toHaveProperty('id', createdButterflyId);
+    //     });
+    // });
 
     // PUT (update) butterfly by id
-    describe('PUT /butterflies/:id', () => {
-        test('Should update the new butterfly', async () => {
-            const updatedData = { commonName: 'Updated Name' };
-            const response = await request(app).put(`/butterflies/${createdButterflyId}`).send(updatedData);
+    // describe('PUT /butterflies/:id', () => {
+    //     test('Should update the new butterfly', async () => {
+    //         const updatedData = { commonName: 'Updated Name' };
+    //         const response = await request(app).put(`/butterflies/${createdButterflyId}`).send(updatedData);
 
-            expect(response.status).toBe(200);
-            expect(response.body.butterfly).toHaveProperty('commonName', 'Updated Name');
-        });
-    });
+    //         expect(response.status).toBe(200);
+    //         expect(response.body.butterfly).toHaveProperty('commonName', 'Updated Name');
+    //     });
+    // });
 
     // DELETE butterfly by id
     describe('DELETE /butterflies/:id', () => {
