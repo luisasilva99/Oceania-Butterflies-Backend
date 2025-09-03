@@ -213,3 +213,33 @@ export const validarDatosMariposa = (datos) => {
   // Devolvemos la lista de errores
   return errores;
 };
+
+// Validaciones para el POST
+export const validarCrearMariposa = (req, res, next) => {
+    console.log('Rellene los campos correspondientes');
+    
+    // Obtenemos los datos que mandó el usuario
+    const datosDelUsuario = req.body;
+    console.log('Datos del usuario:', datosDelUsuario);
+    
+    // Los validamos usando nuestra función
+    const errores = validarDatosMariposa(datosDelUsuario);
+    
+    // ¿Hay errores?
+    if (errores.length > 0) {
+        console.log('Hay algun error al crear la mariposa, intentalo de nuevo');
+        console.log('Errores:', errores);
+        
+        // Mandamos respuesta de error al usuario
+        return res.status(400).json({
+            exito: false,
+            mensaje: 'Los datos tienen errores',
+            errores: errores
+        });
+    }
+    
+    console.log('Proceso correcto para crear la mariposa');
+    
+    // Si no hay errores, continuamos al controlador
+    next();
+};
