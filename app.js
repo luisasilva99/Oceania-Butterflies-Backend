@@ -28,8 +28,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Ruta para manejar 404
-app.use('*', (req, res) => {
+// Ruta para manejar 404 - LÍNEA CORREGIDA
+app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
