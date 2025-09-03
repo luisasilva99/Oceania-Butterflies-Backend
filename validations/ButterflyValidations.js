@@ -1,6 +1,6 @@
 
 // PASO 1: Crear una función que revise un campo por vez
-function revisarCampoTexto(valor, nombre, esObligatorio, minimo, maximo) {
+function checkTestField(valor, nombre, esObligatorio, minimo, maximo) {
     // Esta función revisa si un texto está bien o mal
     
     console.log(`Revision de: ${nombre}`); // Para ver qué estamos revisando
@@ -16,12 +16,12 @@ function revisarCampoTexto(valor, nombre, esObligatorio, minimo, maximo) {
     // Limpiamos el texto (quitamos espacios al inicio y final)
     const textoLimpio = valor.trim();
     
-    // ¿El texto es muy corto?
+    // Para cuando el texto es muy corto
     if (textoLimpio.length < minimo) {
         return `${nombre} debe tener al menos ${minimo} caracteres`;
     }
     
-    // ¿El texto es muy largo?
+    // Si el texto es muy largo, te manda una señal
     if (textoLimpio.length > maximo) {
         return `${nombre} no puede tener más de ${maximo} caracteres`;
     }
@@ -29,12 +29,12 @@ function revisarCampoTexto(valor, nombre, esObligatorio, minimo, maximo) {
     return null; // no retorna nada porque esta bien
 }
 
-// PASO 2: Función principal que revisa TODOS los campos
+// Esta es la funcion que verifica todos los campos que e encuentran en el 
 export const validarDatosMariposa = (datos) => {
-    console.log('🔍 EMPEZANDO A VALIDAR DATOS DE MARIPOSA');
+    console.log('Empezamos a validar los campos...');
     console.log('Datos recibidos:', datos);
     
-    // Creamos una lista para guardar los errores
+    // Creamos un array vacio para guardar los errores
     const errores = [];
     
     // REVISAR NOMBRE COMÚN (obligatorio)
@@ -50,7 +50,7 @@ export const validarDatosMariposa = (datos) => {
         errores.push({ campo: 'commonName', mensaje: errorNombreComun });
     }
     
-    // REVISAR NOMBRE CIENTÍFICO (obligatorio)
+    // revisando el nombre cientifico (obligatorio)
     console.log('Revisando nombre científico...');
     const errorNombreCientifico = revisarCampoTexto(
         datos.scientificName,
@@ -63,7 +63,7 @@ export const validarDatosMariposa = (datos) => {
         errores.push({ campo: 'scientificName', mensaje: errorNombreCientifico });
     }
     
-    // REVISAR FAMILIA (obligatorio)
+    // Revisa la familia (campo obligatorio)
     console.log('Revisando familia...');
     const errorFamilia = revisarCampoTexto(
         datos.family,
@@ -76,7 +76,7 @@ export const validarDatosMariposa = (datos) => {
         errores.push({ campo: 'family', mensaje: errorFamilia });
     }
     
-    // REVISAR REGIÓN (opcional)
+    // Revisar region
     console.log('Revisando región...');
     if (datos.region) { // Solo la revisamos si viene algo
         const errorRegion = revisarCampoTexto(
@@ -91,7 +91,7 @@ export const validarDatosMariposa = (datos) => {
         }
     }
     
-    // REVISAR UBICACIÓN ESPECÍFICA (opcional)
+    // Revision ubicacion especifica
     console.log( 'Revisando ubicación específica...');
     if (datos.specificLocation) {
         const errorUbicacion = revisarCampoTexto(
@@ -106,7 +106,7 @@ export const validarDatosMariposa = (datos) => {
         }
     }
     
-    // REVISAR HÁBITAT (opcional)
+    // Revision del dato habitat
     console.log(' Revisando hábitat...');
     if (datos.habitat) {
         const errorHabitat = revisarCampoTexto(
@@ -121,30 +121,30 @@ export const validarDatosMariposa = (datos) => {
         }
     }
     
-    // Revisar medida(opcional, pero si viene debe ser un número)
-    console.log('Revisando envergadura...');
+    // Revisar medida
+    console.log('Revisando medidas...');
     if (datos.wingspan) {
         // Intentamos convertir a número
-        const numeroEnvergadura = parseFloat(datos.wingspan);
+        const numeroMedidas = parseFloat(datos.wingspan);
         
-        // ¿Se pudo convertir a número?
-        if (isNaN(numeroEnvergadura)) {
+        // Verificando de que sea un numero
+        if (isNaN(numeroMedidas)) {
             errores.push({ 
                 campo: 'wingspan', 
-                mensaje: 'La envergadura debe ser un número' 
+                mensaje: 'La medidas debe ser un número' 
             });
         } else {
             // ¿Es un número válido?
-            if (numeroEnvergadura <= 0) {
-                errores.push({ 
+            if (numeroMedidas <= 0) {
+                errores.push({ // Se agregan al arrays errores para contarlos
                     campo: 'wingspan', 
-                    mensaje: 'La envergadura debe ser mayor que 0' 
+                    mensaje: 'La medidas debe ser mayor que 0' 
                 });
             }
-            if (numeroEnvergadura > 999) {
+            if (numeroMedidas > 999) {
                 errores.push({ 
                     campo: 'wingspan', 
-                    mensaje: 'La envergadura no puede ser mayor que 999' 
+                    mensaje: 'La medidas no puede ser mayor que 999' 
                 });
             }
         }
@@ -184,9 +184,9 @@ export const validarDatosMariposa = (datos) => {
         }
     }
     
-    // REVISAR PLANTAS HOSPEDERAS (obligatorio)
-    console.log('Revisando plantas hospederas...');
-    const errorPlantas = revisarCampoTexto(
+    // revisar plantas 
+    console.log('Revisando plantas ...');
+    const errorPlantas = checkTestField(
         datos.hostPlants,
         'plantas hospederas',
         true,  // Obligatorio
