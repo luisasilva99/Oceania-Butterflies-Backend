@@ -54,7 +54,7 @@ export const createButterfly = async(req, res) => {
 
 }
 //UPDATE one butterfly
-const updateButterfly = async(req, res) => {
+export const updateButterfly = async(req, res) => {
     try {
         const { id } = req.params; // identifica la mariposa que hay que actualizar
         const [updated] = await
