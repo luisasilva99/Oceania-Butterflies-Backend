@@ -1,137 +1,121 @@
-import { DataTypes } from "sequelize";
+// Importamos lo necesario
+import { DataTypes} from "sequelize";
 import db_connection from "../database/db_connection.js";
-
-const ButterflyModel = db_connection.define('butterflies', {
-    commonName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notNull: {
-                msg: 'El nombre común es obligatorio'
-            },
-            len: {
-                args: [2, 100],
-                msg: 'El nombre común debe tener entre 2 y 100 caracteres'
-            }
-        }
+const ButterflyModel = db_connection.define('Butterfly', {
+    // id de la mariposa
+    id:{
+      type: DataTypes.NUMBER,
+      autoIncrement: true,
+      primaryKey: true // Es el id principal
     },
+    // nombre de la mariposa
+    // Obligatorio
+    commonName: {
+        type: DataTypes.STRING, // para textos cortos
+        allowNull: false
+    },
+    //nombre cientifico
+    // Obligatorio
     scientificName: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-            notNull: {
-                msg: 'El nombre científico es obligatorio'
-            },
-            len: {
-                args: [2, 150],
-                msg: 'El nombre científico debe tener entre 2 y 150 caracteres'
-            }
-        }
-    },
-    family: {
+        unique: true 
+    }, 
+    //Familia
+    // Obligatorio
+    family:{
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notNull: {
-                msg: 'La familia es obligatoria'
-            }
-        }
+        allowNull: false
     },
-    region: {
+    //region de la mariposa
+    // Region 
+    region:{
+        type: DataTypes.STRING
+    },
+    //Locacion especifica
+    specificLocation:{
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notNull: {
-                msg: 'La región es obligatoria'
-            }
-        }
     },
-    specificLocation: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
+    //Habitad de la mariposa
     habitat: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: DataTypes.STRING,
     },
-    wingspan: {
-        type: DataTypes.DECIMAL(5, 2),
-        allowNull: true,
-        validate: {
-            min: {
-                args: 0,
-                msg: 'La envergadura debe ser un número positivo'
-            }
+    // Tamaño de la ala de la mariposa (es un numero)
+    winspan:{
+        type: DataTypes.DECIMAL(3,2),
+    },
+    // Unidad de medida de la ala de la mariposa (cm, mm, m, etc)
+    wingspanUnit:{ // Numero 
+        type: DataTypes.STRING,
+    }, 
+    // descripcion de la mariposa
+    description:{
+        type: DataTypes.TEXT, // Para textos largos
+    },
+    // estado de conservacion de la mariposa
+    conservationStatus:{
+        type: DataTypes.STRING,
+    },
+    // Nivel de preocupacion
+    // Obligatorio
+    threatLevel:{
+        type: DataTypes.STRING,
+        allowNull: false
+        
+    },
+    // cantidad actual de la mariposa
+    population:{
+        type: DataTypes.STRING,
+    
+    },
+    // Temporsada de vuelo (es un array de 6 datos)
+    flightSeason:{
+        type: DataTypes.STRING,
+        defaultValue: false
+    },
+    // Es una array de dos datos
+    hostPlants:{
+        type: DataTypes.STRING,
+        allowNull:false
+    },
+    // Es un array de 3 datos
+    nectarSources:{
+        type: DataTypes.STRING,
+        defaultValue:false
+// me faltan las validaciones
+    },
+    // Comportamiento de la mariposa (solo texto)
+    behavior:{
+        type: DataTypes.STRING,
+        
+    },
+    // Coordenadas (es un objeto con )
+    coordinates:{
+        type:DataTypes.DECIMAL(2,4),
+        defaultValue:{
+            latitude: 0, 
+            longitude: 0
         }
-    },
-    wingspanUnit: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: 'cm'
-    },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    conservationStatus: {
-        type: DataTypes.ENUM('stable', 'declining', 'endangered', 'critical', 'extinct'),
-        allowNull: true,
-        defaultValue: 'stable'
-    },
-    threatLevel: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    population: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    flightSeason: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: []
-    },
-    hostPlants: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: []
-    },
-    nectarSources: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: []
-    },
-    behavior: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    coordinates: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: null
-    },
-    colorPrimary: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-            is: {
-                args: /^#[0-9A-Fa-f]{6}$/,
-                msg: 'Color primario debe ser un código hexadecimal válido (#RRGGBB)'
-            }
-        }
-    },
-    tags: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: []
-    },
-    publicId: {
-        type: DataTypes.STRING,
-        allowNull: true
-    }
-}, {
-    timestamps: false,
-    tableName: 'butterflies'
-});
 
-export default ButterflyModel;
+    },
+    // Color primario
+    colorPrimary:{
+        type: DataTypes.STRING, 
+        
+    },
+    // Tag (es un array de 4 datos)
+    tags:{
+        // Esto es como lo principal del codigo, el resto es para confirmacion o manejo de errores
+        type: DataTypes.STRING
+    
+    },
+    // Es para colocar la foto de la mariposa (se coloca como con uncodigo que le da cloudinary)
+    publicId:{
+        type: DataTypes.STRING,
+        
+
+    }
+
+})
+
+export default ButterflyModel
