@@ -31,7 +31,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     //region de la mariposa
     // Region 
     region:{
-        type: DataTypes.STRING,
+        type: DataTypes.STRING, 
         allowNull:false
     },
     //Locacion especifica
@@ -52,7 +52,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Unidad de medida de la ala de la mariposa (cm, mm, m, etc)
     wingspanUnit:{ // Numero 
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull:true
     }, 
     // descripcion de la mariposa
     description:{
@@ -62,7 +62,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // estado de conservacion de la mariposa
     conservationStatus:{
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull:true
     },
     // Nivel de preocupacion
     // Obligatorio
@@ -72,34 +72,38 @@ const ButterflyModel = db_connection.define('Butterfly', {
     },
     // cantidad actual de la mariposa
     population:{
-        type: DataTypes.STRING,
+        type: DataTypes.STRING, 
         allowNull: true
+    
     },
-    // Temporsada de vuelo (es un array de 6 datos)
+    // Temporada de vuelo (es un array de 6 datos)
     flightSeason:{
         type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: []
+        defaultValue: [],
+        allowNull: true
     },
     // Es una array de dos datos
     hostPlants:{
         type: DataTypes.JSON,
-        allowNull:true,
-        defaultValue: []
+        allowNull: []
+  
     },
     // Es un array de 3 datos
     nectarSources:{
         type: DataTypes.JSON,
-        allowNull:true,
-        defaultValue: []
+        defaultValue: [], 
+        allowNull: true
+      
+// me faltan las validaciones
     },
     // Comportamiento de la mariposa (solo texto)
     behavior:{
         type: DataTypes.TEXT,
-        allowNull:true
+        allowNull: true
+        
     },
-    // Coordenadas (es un objeto con )
-    coordinates:{
+    // Coordenadas
+     coordinates:{
         type: DataTypes.JSON,
         allowNull: true,
         defaultValue:{
@@ -110,19 +114,22 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Color primario
     colorPrimary:{
         type: DataTypes.STRING, 
-        allowNull: true
+        allowNul: true
     },
     // Tag (es un array de 4 datos)
     tags:{
         // Esto es como lo principal del codigo, el resto es para confirmacion o manejo de errores
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
+        defaultValue: [],
         allowNull: true
     },
     // Es para colocar la foto de la mariposa (se coloca como con uncodigo que le da cloudinary)
     publicId:{
-        type: DataTypes.STRING,
-        allowNull: true
+        type: DataTypes.STRING, 
+        allowNull:true   
+
     }
-})
+
+});
 
 export default ButterflyModel;
