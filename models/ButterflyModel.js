@@ -1,6 +1,7 @@
 // Importamos lo necesario
-import { DataTypes} from "sequelize";
+import { DataTypes } from "sequelize";
 import db_connection from "../database/db_connection.js";
+
 const ButterflyModel = db_connection.define('Butterfly', {
     // id de la mariposa
     id:{
@@ -19,7 +20,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     scientificName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true 
+        unique: true
     }, 
     //Familia
     // Obligatorio
@@ -68,7 +69,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     threatLevel:{
         type: DataTypes.STRING,
         allowNull: false
-        
     },
     // cantidad actual de la mariposa
     population:{
@@ -132,4 +132,4 @@ const ButterflyModel = db_connection.define('Butterfly', {
 
 });
 
-export default ButterflyModel
+export default ButterflyModel;
