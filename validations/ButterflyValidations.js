@@ -213,3 +213,134 @@ export const validarDatosMariposa = (datos) => {
   // Devolvemos la lista de errores
   return errores;
 };
+
+// Validaciones para el POST
+export const validarCrearMariposa = (req, res, next) => {
+    console.log('Rellene los campos correspondientes');
+    
+    // Obtenemos los datos que mandó el usuario
+    const datosDelUsuario = req.body;
+    console.log('Datos del usuario:', datosDelUsuario);
+    
+    // Los validamos usando nuestra función
+    const errores = validarDatosMariposa(datosDelUsuario);
+    
+    // Si hay algun tipo de error, entonces se vera en la consola
+    if (errores.length > 0) {
+        console.log('Hay algun error al crear la mariposa, intentalo de nuevo');
+        console.log('Errores:', errores);
+        
+        // Mandamos respuesta de error al usuario
+        return res.status(400).json({
+            exito: false,
+            mensaje: 'Los datos tienen errores',
+            errores: errores
+        });
+    }
+    
+    console.log('Proceso correcto para crear la mariposa');
+    
+    // Si no hay errores, continuamos al controlador
+    next();
+};
+
+// Condiciones para el PUT
+
+export const validarActualizarMariposa = (req, res, next) => {
+    console.log('Comenzando a actualizar...');
+    
+    const datosDelUsuario = req.body;
+    console.log('Datos para actualizar:', datosDelUsuario);
+    
+    // Para actualizar, solo revisamos los campos que vengan
+    // No exigimos que estén todos los obligatorios
+    const errores = [];
+    
+    // Si viene nombre común, lo revisamos
+    if (datosDelUsuario.commonName !== undefined) {
+        const error = revisarCampoTexto(datosDelUsuario.commonName, 'nombre común', false, 2, 100);
+        if (error) errores.push({ campo: 'commonName', mensaje: error });
+    }
+    
+    // Si viene nombre científico, lo revisamos
+    if (datosDelUsuario.scientificName !== undefined) {
+        const error = revisarCampoTexto(datosDelUsuario.scientificName, 'nombre científico', false, 3, 100);
+        if (error) errores.push({ campo: 'scientificName', mensaje: error });
+    }
+    
+    // Si viene familia, la revisamos
+    if (datosDelUsuario.family !== undefined) {
+        const error = revisarCampoTexto(datosDelUsuario.family, 'familia', false, 2, 50);
+        if (error) errores.push({ campo: 'family', mensaje: error });
+    }
+    
+    // Si viene región, la revisamos
+    if (datosDelUsuario.region !== undefined) {
+        console.log('Revisando la región en actualización...');
+        
+        // Si viene algo (no null o vacío), validamos
+        if (datosDelUsuario.region !== null && datosDelUsuario.region !== '') {
+            const regionesValidas = [
+                'Islas del Pacífico',
+                'Nueva Zelanda', 
+                'Australia'
+            ];
+            
+            const regionLimpia = datosDelUsuario.region.trim();
+            
+            if (!regionesValidas.includes(regionLimpia)) {
+                errores.push({ 
+                    campo: 'region', 
+                    mensaje: 'La región debe ser: Islas del Pacífico, Nueva Zelanda, o Australia' 
+                });
+            }
+        }
+    }
+    
+    // Si viene publicId (ID de imagen), lo revisamos
+    if (datosDelUsuario.publicId !== undefined) {
+        console.log('');
+        
+        // Si viene algo (no null), validamos
+        if (datosDelUsuario.publicId !== null && datosDelUsuario.publicId !== '') {
+            const publicIdLimpio = datosDelUsuario.publicId.trim();
+            
+            // Verificar longitud
+            if (publicIdLimpio.length < 10) {
+                errores.push({ 
+                    campo: 'publicId', 
+                    mensaje: 'El ID de la imagen es demasiado corto (mínimo 10 caracteres)' 
+                });
+            }
+            
+            if (publicIdLimpio.length > 100) {
+                errores.push({ 
+                    campo: 'publicId', 
+                    mensaje: 'El ID de la imagen es demasiado largo (máximo 100 caracteres)' 
+                });
+            }
+            
+            // Verificar formato
+            const formatoValidoCloudinary = /^[a-zA-Z0-9_-]+$/;
+            if (!formatoValidoCloudinary.test(publicIdLimpio)) {
+                errores.push({ 
+                    campo: 'publicId', 
+                    mensaje: 'El ID de la imagen tiene formato inválido' 
+                });
+            }
+        }
+    }
+    
+    // ¿Hay errores?
+    if (errores.length > 0) {
+        console.log('Hay algun error en algun dato(s), revisa');
+        return res.status(400).json({
+            exito: false,
+            mensaje: 'Los datos tienen errores',
+            errores: errores
+        });
+    }
+    
+    console.log('Actualizacion completada!');
+    next();
+};
