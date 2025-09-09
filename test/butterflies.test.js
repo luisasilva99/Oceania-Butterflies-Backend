@@ -25,59 +25,48 @@ describe('Oceania-Butterflies-Backend', () => {
     });
 
     //GET ONE BUTTERFLY
-describe("butterfly crud", () => {
-    let testButterfly; //guardamos la mariposa creada en la base de datos
-
-    //conectamos la bd y creamos un registro de prueba
-    beforeAll(async () => {
-        await db_connection.authenticate()
-
-        testButterfly = await ButterflyModel.create({
-            commonName: "TestButterfly",
-            scientificName: "TestButterfly",
-            family: "TestButterfly",
-            region: "TestButterfly",
-            specificLocation: "TestButterly",
-            threatLevel: "TestButterfly"
-        })
-    })
-    afterAll(async () => {
-        if (testButterfly) {
-            await testButterfly.destroy(); //limpiamos la mariposa de prueba
-        }
-        await db_connection.close();
-        server.close();
-    });
-    //test GET ONE
     describe("GET /butterflies/:id", () => {
-        let response
+    let testButterfly, response;
 
-        beforeEach(async () => {
-            response = await request(app).get(`/butterflies/${testButterfly.id}`)
-        })
-        it('should return status 200', async () => {
-            expect(response.status).toBe(200)
-        })
-
-        it("should return butterfly with correct id", async () => {
-            expect(response.body.id).toBe(testButterfly.id);
-        });
-
-        it('should return butterfly with required fields', async () => {
-            expect(response.body).toMatchObject({
-                id: testButterfly.id,
-                commonName: "TestButterfly",
-                scientificName: expect.any(String),
-                family: expect.any(String),
-                region: expect.any(String),
-                specificLocation: expect.any(String),
-                threatLevel: expect.any(String)
-
-            });
-        });
+    beforeAll(async () => {
+      testButterfly = await ButterflyModel.create({
+        commonName: "TestButterfly",
+        scientificName: "TestButterfly",
+        family: "TestButterfly",
+        region: "TestButterfly",
+        specificLocation: "TestButterfly",
+        threatLevel: "TestButterfly",
+      });
     });
 
-});
+    beforeEach(async () => {
+      response = await request(app).get(`/butterflies/${testButterfly.id}`);
+    });
+
+    it("should return status 200", () => {
+      expect(response.status).toBe(200);
+    });
+
+    it("should return butterfly with correct id", () => {
+      expect(response.body.butterfly.id).toBe(testButterfly.id);
+    });
+
+    it("should return butterfly with required fields", () => {
+      expect(response.body.butterfly).toMatchObject({
+        id: testButterfly.id,
+        commonName: expect.any(String),
+        scientificName: expect.any(String),
+        family: expect.any(String),
+        region: expect.any(String),
+        specificLocation: expect.any(String),
+        threatLevel: expect.any(String),
+      });
+    });
+
+    afterAll(async () => {
+      await testButterfly.destroy();
+    });
+  });
 
     // DELETE butterfly by id
     describe('DELETE /butterflies/:id', () => {
