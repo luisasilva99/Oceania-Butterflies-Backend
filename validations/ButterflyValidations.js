@@ -213,7 +213,7 @@ export const validarDatosMariposa = (datos) => {
 };
 
 // Validación para obtener una mariposa por ID
-export const validarObtenerUnaMariposa = (req, res, next) => {
+export const validateOneButterfly= (req, res, next) => {
     try {
         console.log('Validando ID para obtener una mariposa...');
         
@@ -262,7 +262,7 @@ export const validarObtenerUnaMariposa = (req, res, next) => {
 };
 
 // Validación para obtener todas las mariposas
-export const validarObtenerTodasLasMariposas = (req, res, next) => {
+export const validateAllButterflies = (req, res, next) => {
     try {
         console.log('Validando parámetros para obtener todas las mariposas...');
         
@@ -337,7 +337,7 @@ export const validarObtenerTodasLasMariposas = (req, res, next) => {
 };
 
 // Validación para eliminar una mariposa por ID
-export const validarEliminarMariposa = (req, res, next) => {
+export const validateDeleteButterfly = (req, res, next) => {
     try {
         console.log('Validando ID para eliminar mariposa...');
         
@@ -386,7 +386,7 @@ export const validarEliminarMariposa = (req, res, next) => {
 };
 
 // Validaciones para el POST 
-export const validarCrearMariposa = (req, res, next) => {
+export const  validateCreateButterfly = (req, res, next) => {
     console.log('Rellenando los campos correspondientes...');
     
     // Obtenemos los datos que mandó el usuario
@@ -416,7 +416,7 @@ export const validarCrearMariposa = (req, res, next) => {
 };
 
 // Validaciones para el PUT 
-export const validarActualizarMariposa = (req, res, next) => {
+export const validarUpdateButterfly = (req, res, next) => {
     console.log('Comenzando validación para actualizar...');
     
     const datosDelUsuario = req.body;
