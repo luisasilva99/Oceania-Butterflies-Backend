@@ -1,3 +1,8 @@
+// ✅ DOTENVX: Importar y configurar ANTES que todo lo demás
+import { config } from '@dotenvx/dotenvx'
+config()
+
+// Ahora tus imports normales
 import express from "express";
 import butterflyRoutes from "./routes/butterflyRoutes.js";
 import db_connection from "./database/db_connection.js";
@@ -28,9 +33,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Ruta para manejar 404
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// ✅ SOLUCIÓN: Ruta 404 sin el asterisco problemático
+app.use((req, res) => {
+  res.status(404).json({ 
+    message: 'Route not found',
+    path: req.originalUrl,
+    method: req.method
+  });
 });
 
 // Configuración de base de datos

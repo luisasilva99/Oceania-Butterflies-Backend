@@ -48,8 +48,6 @@ const db_connection = new Sequelize(currentDatabase, DB_USER, DB_PASSWORD, {
     },
     dialectOptions: {
         connectTimeout: 60000, // Timeout de conexión
-        acquireTimeout: 60000,
-        timeout: 60000,
         dateStrings: true,
         typeCast: true
     }
@@ -62,10 +60,10 @@ const testConnection = async () => {
         
         // Solo mostrar mensajes si NO estamos en testing
         if (NODE_ENV !== 'test') {
-            console.log('Conexión a la base de datos establecida correctamente');
-            console.log(`Base de datos: ${currentDatabase} en ${DB_HOST}:${DB_PORT || 3306}`);
-            console.log(`Dialecto: ${DB_DIALECT}`);
-            console.log(`Entorno: ${NODE_ENV || 'development'}`);
+            console.log('✅ Conexión a la base de datos establecida correctamente');
+            console.log(`📊 Base de datos: ${currentDatabase} en ${DB_HOST}:${DB_PORT || 3306}`);
+            console.log(`🔧 Dialecto: ${DB_DIALECT}`);
+            console.log(`🌍 Entorno: ${NODE_ENV || 'development'}`);
         }
         
     } catch (error) {
