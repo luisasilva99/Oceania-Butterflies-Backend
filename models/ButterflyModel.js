@@ -45,7 +45,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
         allowNull: true
     },
     // Tamaño de la ala de la mariposa (es un numero)
-    winspan:{
+    wingspan:{
         type: DataTypes.DECIMAL(3,2),
         allowNull: true
     },
@@ -126,7 +126,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Es para colocar la foto de la mariposa (se coloca como con uncodigo que le da cloudinary)
     publicId:{
         type: DataTypes.STRING, 
-        allowNull:true   
     }
 
 });
