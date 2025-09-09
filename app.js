@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import butterflyRouter from './routes/ButterflyRoutes.js';
+import ButterflyRoutes from './routes/butterflyRoutes.js';
 import db_connection from './database/db_connection.js';
-import ButterflyModel from './models/butterflyModel.js';
+import ButterflyModel from './models/ButterflyModel.js';
+import butterflyRoutes from './routes/butterflyRoutes.js';
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.get("/", (req, res) => {
 });
 
 // Rutas de la API
-app.use('/butterflies', butterflyRouter); 
+app.use('/butterflies', butterflyRoutes); 
 
 // Middleware de manejo de errores (opcional pero recomendado)
 app.use((err, req, res, next) => {
@@ -40,7 +41,7 @@ app.use((req, res) => {
         console.log('🦋 Connected to database successfully!');
         
         // Sincroniza el modelo con la base de datos
-        await ButterflyModel.sync({ force: false }); 
+        await ButterflyModel.sync({ force: false }); // force: false para no borrar datos existentes
         console.log('🦋 Butterfly model synchronized');
         
         // Sincroniza todos los modelos con la base de datos

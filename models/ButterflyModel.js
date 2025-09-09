@@ -32,7 +32,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Region   
     region:{
         type: DataTypes.STRING, 
-        allowNull:false
+        allowNull: false
     },
     //Locacion especifica
     specificLocation:{
@@ -50,9 +50,9 @@ const ButterflyModel = db_connection.define('Butterfly', {
         allowNull: true
     },
     // Unidad de medida de la ala de la mariposa (cm, mm, m, etc)
-    wingspanUnit:{ // Numero 
+    wingspanUnit:{ 
         type: DataTypes.STRING,
-        allowNull:true
+        allowNull: true
     }, 
     // descripcion de la mariposa
     description:{
@@ -62,7 +62,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // estado de conservacion de la mariposa
     conservationStatus:{
         type: DataTypes.STRING,
-        allowNull:true
+        allowNull: true
     },
     // Nivel de preocupacion
     // Obligatorio
@@ -74,7 +74,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     population:{
         type: DataTypes.STRING, 
         allowNull: true
-    
     },
     // Temporada de vuelo (es un array de 6 datos)
     flightSeason:{
@@ -85,28 +84,25 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Es una array de dos datos
     hostPlants:{
         type: DataTypes.JSON,
-        allowNull: []
-  
+        defaultValue: [],
+        allowNull: true  // ✅ Corregido: era allowNull: []
     },
     // Es un array de 3 datos
     nectarSources:{
         type: DataTypes.JSON,
         defaultValue: [], 
         allowNull: true
-      
-// me faltan las validaciones
     },
     // Comportamiento de la mariposa (solo texto)
     behavior:{
         type: DataTypes.TEXT,
         allowNull: true
-        
     },
     // Coordenadas
-     coordinates:{
+    coordinates:{
         type: DataTypes.JSON,
         allowNull: true,
-        defaultValue:{
+        defaultValue: {
             latitude: 0, 
             longitude: 0
         }
@@ -114,11 +110,10 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Color primario
     colorPrimary:{
         type: DataTypes.STRING, 
-        allowNul: true
+        allowNull: true  // ✅ Corregido: era allowNul
     },
     // Tag (es un array de 4 datos)
     tags:{
-        // Esto es como lo principal del codigo, el resto es para confirmacion o manejo de errores
         type: DataTypes.JSON,
         defaultValue: [],
         allowNull: true
@@ -127,7 +122,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     publicId:{
         type: DataTypes.STRING, 
     }
-
 });
 
 export default ButterflyModel;
