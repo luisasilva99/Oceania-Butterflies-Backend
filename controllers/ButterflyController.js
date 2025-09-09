@@ -1,4 +1,4 @@
-import ButterflyModel from "../models/butterflyModel.js"
+import ButterflyModel from "../models/ButterflyModel.js"
 
 // GET all butterflies
 export const getAllButterflies = async(req, res) => {

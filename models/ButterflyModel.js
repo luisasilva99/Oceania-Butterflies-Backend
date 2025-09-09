@@ -29,7 +29,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
         allowNull: false
     },
     //region de la mariposa
-    // Region 
+    // Region   
     region:{
         type: DataTypes.STRING, 
         allowNull: false
@@ -46,7 +46,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     },
     // Tamaño de la ala de la mariposa (es un numero)
     wingspan:{
-        type: DataTypes.DECIMAL(5,2), // Cambiado a 5,2 para más flexibilidad
+        type: DataTypes.DECIMAL(3,2),
         allowNull: true
     },
     // Unidad de medida de la ala de la mariposa (cm, mm, m, etc)
@@ -121,7 +121,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Es para colocar la foto de la mariposa (se coloca como con uncodigo que le da cloudinary)
     publicId:{
         type: DataTypes.STRING, 
-        allowNull: true   
     }
 });
 
