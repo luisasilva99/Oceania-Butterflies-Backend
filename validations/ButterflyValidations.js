@@ -125,7 +125,7 @@ export const validarDatosMariposa = (datos) => {
     }
   }
 
-  // Revisar medida (CORREGIDO)
+  // Revisar medida
   console.log("Revisando medidas...");
   if (datos.wingspan) {
     // Intentamos convertir a número
@@ -154,10 +154,10 @@ export const validarDatosMariposa = (datos) => {
     }
   }
 
-  // Para revisar la unidad de medida (CORREGIDO)
+  // Para revisar la unidad de medida
   console.log("Revisando unidad de medida...");
   if (datos.wingspanUnit) {
-    // Lista de unidades que aceptamos (corregido - debe ser array)
+    // Lista de unidades que aceptamos 
     const unidadesValidas = ["cm", "mm", "inch"];
 
     if (!unidadesValidas.includes(datos.wingspanUnit)) {
@@ -168,7 +168,7 @@ export const validarDatosMariposa = (datos) => {
     }
   }
 
-  // Revision del nivel de amenaza (CORREGIDO)
+  // Revision del nivel de amenaza 
   console.log("Revisando nivel de amenaza...");
   if (!datos.threatLevel || datos.threatLevel.trim() === "") {
     errores.push({
@@ -176,15 +176,12 @@ export const validarDatosMariposa = (datos) => {
       mensaje: "El nivel de amenaza es obligatorio",
     });
   } else {
-    // Lista de niveles válidos (corregidos)
+    // Lista de niveles válidos 
     const nivelesValidos = [
       "vulnerable",
       "preocupacion menor",
       "Peligro Critico",
-      "Low",
-      "Medium", 
-      "High",
-      "Critical"
+      "Critico"
     ];
 
     if (!nivelesValidos.includes(datos.threatLevel)) {
@@ -195,7 +192,7 @@ export const validarDatosMariposa = (datos) => {
     }
   }
 
-  // revisar plantas (CORREGIDO - usar función correcta)
+  // revisar plantas 
   console.log("Revisando plantas hospederas...");
   const errorPlantas = revisarCampoTexto(
     datos.hostPlants,
@@ -388,7 +385,7 @@ export const validarEliminarMariposa = (req, res, next) => {
     }
 };
 
-// Validaciones para el POST (tu código existente corregido)
+// Validaciones para el POST 
 export const validarCrearMariposa = (req, res, next) => {
     console.log('Rellenando los campos correspondientes...');
     
@@ -418,7 +415,7 @@ export const validarCrearMariposa = (req, res, next) => {
     next();
 };
 
-// Validaciones para el PUT (tu código existente corregido)
+// Validaciones para el PUT 
 export const validarActualizarMariposa = (req, res, next) => {
     console.log('Comenzando validación para actualizar...');
     
@@ -470,7 +467,7 @@ export const validarActualizarMariposa = (req, res, next) => {
         }
     }
     
-    // Si viene publicId (ID de imagen), lo revisamos
+    // Si viene publicId, lo revisamos
     if (datosDelUsuario.publicId !== undefined) {
         console.log('Revisando publicId...');
         
