@@ -3,6 +3,8 @@ import { app, server } from "../app.js"
 import db_connection from "../database/db_connection.js";
 import ButterflyModel from "../models/ButterflyModel.js";
 
+
+//GET ONE BUTTERFLY
 describe("butterfly crud", () => {
     let testButterfly; //guardamos la mariposa creada en la base de datos
 
