@@ -1,7 +1,7 @@
-import request from 'supertest';
-import { app } from '../app.js';
-import db_connection from '../database/db_connection.js';
-import ButterflyModel from '../models/ButterflyModel.js';
+import request from "supertest";
+import { app, server } from "../app.js"
+import db_connection from "../database/db_connection.js";
+import ButterflyModel from "../models/ButterflyModel.js";
 
 describe('Oceania-Butterflies-Backend', () => {
     beforeAll(async () => {
@@ -23,6 +23,50 @@ describe('Oceania-Butterflies-Backend', () => {
             expect(response.body).toBeInstanceOf(Array);
         });
     });
+
+    //GET ONE BUTTERFLY
+    describe("GET /butterflies/:id", () => {
+    let testButterfly, response;
+
+    beforeAll(async () => {
+      testButterfly = await ButterflyModel.create({
+        commonName: "TestButterfly",
+        scientificName: "TestButterfly",
+        family: "TestButterfly",
+        region: "TestButterfly",
+        specificLocation: "TestButterfly",
+        threatLevel: "TestButterfly",
+      });
+    });
+
+    beforeEach(async () => {
+      response = await request(app).get(`/butterflies/${testButterfly.id}`);
+    });
+
+    it("should return status 200", () => {
+      expect(response.status).toBe(200);
+    });
+
+    it("should return butterfly with correct id", () => {
+      expect(response.body.butterfly.id).toBe(testButterfly.id);
+    });
+
+    it("should return butterfly with required fields", () => {
+      expect(response.body.butterfly).toMatchObject({
+        id: testButterfly.id,
+        commonName: expect.any(String),
+        scientificName: expect.any(String),
+        family: expect.any(String),
+        region: expect.any(String),
+        specificLocation: expect.any(String),
+        threatLevel: expect.any(String),
+      });
+    });
+
+    afterAll(async () => {
+      await testButterfly.destroy();
+    });
+  });
 
     // DELETE butterfly by id
     describe('DELETE /butterflies/:id', () => {
