@@ -29,7 +29,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
         allowNull: false
     },
     //region de la mariposa
-    // Region 
+    // Region   
     region:{
         type: DataTypes.STRING, 
         allowNull:false
@@ -127,7 +127,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     publicId:{
         type: DataTypes.STRING, 
         allowNull:true   
-
     }
 
 });
