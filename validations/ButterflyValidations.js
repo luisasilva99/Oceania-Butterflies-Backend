@@ -344,3 +344,52 @@ export const validarActualizarMariposa = (req, res, next) => {
     console.log('Actualizacion completada!');
     next();
 };
+
+// Validación para eliminar una mariposa por ID
+export const validarEliminarMariposa = (req, res, next) => {
+    try {
+        console.log('Validando ID para eliminar mariposa...');
+        
+        const { id } = req.params;
+        console.log('ID para eliminar:', id);
+        
+        // Validar que el ID esté presente
+        if (!id) {
+            console.log('Error: ID no proporcionado para eliminación');
+            return res.status(400).json({ 
+                exito: false,
+                mensaje: "El ID es requerido para eliminar la mariposa" 
+            });
+        }
+        
+        // Validar que el ID sea un número válido
+        const numeroId = parseInt(id);
+        if (isNaN(numeroId)) {
+            console.log('Error: ID no es un número válido para eliminación');
+            return res.status(400).json({ 
+                exito: false,
+                mensaje: "El ID debe ser un número válido" 
+            });
+        }
+        
+        // Validar que el ID sea un número positivo
+        if (numeroId <= 0) {
+            console.log('Error: ID debe ser positivo para eliminación');
+            return res.status(400).json({ 
+                exito: false,
+                mensaje: "El ID debe ser un número positivo" 
+            });
+        }
+        
+        console.log('Validación de ID para eliminación exitosa');
+        next();
+        
+    } catch (error) {
+        console.log('Error en validación de eliminación:', error);
+        return res.status(500).json({ 
+            exito: false,
+            mensaje: "Error en la validación", 
+            error: error.message 
+        });
+    }
+};
