@@ -1,6 +1,6 @@
 node_modules
 .DS_Store
+.env.local
+.env.test
 .env
 .env.keys
-.env.local
-butterflies.PUT.test.js

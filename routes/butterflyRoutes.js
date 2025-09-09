@@ -7,21 +7,29 @@ import {
     updateButterfly       
 } from "../controllers/ButterflyController.js"
 
+import {
+    validateOneButterfly, 
+    validateAllButterflies,
+    validateCreateButterfly,
+    validarUpdateButterfly,
+    validateDeleteButterfly
+} from "../validations/ButterflyValidations.js"
+
 const butterflyRoutes = express.Router()
 
 // GET - Obtener todas las mariposas
-butterflyRoutes.get('/', getAllButterflies)
+butterflyRoutes.get('/', getAllButterflies, validateAllButterflies)
 
 // GET - Obtener una mariposa por ID
-butterflyRoutes.get('/:id', getOneButterfly)
+butterflyRoutes.get('/:id', getOneButterfly, validateOneButterfly)
 
 // POST - Crear una nueva mariposa
-butterflyRoutes.post('/', createButterfly)
+butterflyRoutes.post('/', createButterfly, validateCreateButterfly)
 
 // PUT - Actualizar una mariposa por ID
-butterflyRoutes.put('/:id', updateButterfly)
+butterflyRoutes.put('/:id', updateButterfly, validarUpdateButterfly)
 
 // DELETE - Eliminar una mariposa por ID
-butterflyRoutes.delete('/:id', deleteButterfly)
+butterflyRoutes.delete('/:id', deleteButterfly, validateDeleteButterfly)
 
 export default butterflyRoutes
