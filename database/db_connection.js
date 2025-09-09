@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 import '@dotenvx/dotenvx/config'; 
 
 const db_connection = new Sequelize(
-  process.env.DB_NAME,     
+  process.env.NODE_ENV === 'test' ? process.env.DB_NAME_TEST : process.env.DB_NAME,  //Utiliza DB_NAME_TEST en entorno de prueba   
   process.env.DB_USER,     
   process.env.DB_PASSWORD, 
   {

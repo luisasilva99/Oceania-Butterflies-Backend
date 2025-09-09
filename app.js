@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import ButterflyRoutes from './routes/butterflyRoutes.js';
 import db_connection from './database/db_connection.js';
-import ButterflyModel from './models/butterflyModel.js';
+import ButterflyModel from './models/ButterflyModel.js';
 import butterflyRoutes from './routes/butterflyRoutes.js';
 
 const app = express();
