@@ -1,79 +1,23 @@
 import ButterflyModel from "../models/ButterflyModel.js";
 import { validationResult } from 'express-validator';
 
-// 🔄 Función para convertir de camelCase (frontend) a snake_case (DB)
-const convertToDbFormat = (data) => {
-    return {
-        common_name: data.commonName,
-        scientific_name: data.scientificName,
-        family: data.family,
-        region: data.region,
-        specific_location: data.specificLocation,
-        habitat: data.habitat,
-        wingspan: data.wingspan,
-        wingspan_unit: data.wingspanUnit,
-        description: data.description,
-        conservation_status: data.conservationStatus,
-        threat_level: data.threatLevel,
-        population: data.population,
-        flight_season: data.flightSeason,
-        host_plants: data.hostPlants,
-        nectar_sources: data.nectarSources,
-        behavior: data.behavior,
-        coordinates: data.coordinates,
-        color_primary: data.colorPrimary,
-        tags: data.tags,
-        public_id: data.publicId
-    };
-};
-
-// 🔄 Función para convertir de snake_case (DB) a camelCase (frontend)
-const convertToApiFormat = (data) => {
-    const butterfly = data.toJSON ? data.toJSON() : data;
-    return {
-        id: butterfly.id,
-        commonName: butterfly.common_name,
-        scientificName: butterfly.scientific_name,
-        family: butterfly.family,
-        region: butterfly.region,
-        specificLocation: butterfly.specific_location,
-        habitat: butterfly.habitat,
-        wingspan: butterfly.wingspan,
-        wingspanUnit: butterfly.wingspan_unit,
-        description: butterfly.description,
-        conservationStatus: butterfly.conservation_status,
-        threatLevel: butterfly.threat_level,
-        population: butterfly.population,
-        flightSeason: butterfly.flight_season || [],
-        hostPlants: butterfly.host_plants || [],
-        nectarSources: butterfly.nectar_sources || [],
-        behavior: butterfly.behavior,
-        coordinates: butterfly.coordinates,
-        colorPrimary: butterfly.color_primary,
-        tags: butterfly.tags || [],
-        publicId: butterfly.public_id,
-        createdAt: butterfly.createdAt,
-        updatedAt: butterfly.updatedAt
-    };
-};
-
-// 📋 GET - Obtener todas las mariposas
+// GET - Obtener todas las mariposas
 export const getAllButterflies = async (req, res) => {
     try {
+        // Buscar todas las mariposas en la BD y ordenarlas alfabéticamente
         const butterflies = await ButterflyModel.findAll({
-            order: [['common_name', 'ASC']] // Ordenar alfabéticamente
+            order: [['commonName', 'ASC']] // ASC = ascendente (A-Z)
         });
         
-        // Convertir a formato API (camelCase)
-        const formattedButterflies = butterflies.map(convertToApiFormat);
-        
+        // Responder con formato JSON estandarizado
         res.status(200).json({
             success: true,
-            count: formattedButterflies.length,
-            data: formattedButterflies
+            count: butterflies.length, // Número total de mariposas
+            data: butterflies
         });
         
     } catch (error) {
+        // Manejo de errores - siempre incluir try/catch en funciones async
         console.error('Error al obtener mariposas:', error);
         res.status(500).json({ 
             success: false,
@@ -82,13 +26,16 @@ export const getAllButterflies = async (req, res) => {
     }
 };
 
-// 📋 GET - Obtener una mariposa por ID
+// GET - Obtener una mariposa por ID específico
 export const getButterflyById = async (req, res) => {
     try {
+        // Extraer el ID de los parámetros de la URL (ej: /butterflies/123)
         const { id } = req.params;
         
+        // Buscar por clave primaria (Primary Key)
         const butterfly = await ButterflyModel.findByPk(id);
         
+        // Verificar si la mariposa existe
         if (!butterfly) {
             return res.status(404).json({
                 success: false,
@@ -96,12 +43,10 @@ export const getButterflyById = async (req, res) => {
             });
         }
         
-        // Convertir a formato API (camelCase)
-        const formattedButterfly = convertToApiFormat(butterfly);
-        
+        // Responder con la mariposa encontrada
         res.status(200).json({
             success: true,
-            data: formattedButterfly
+            data: butterfly
         });
         
     } catch (error) {
@@ -113,47 +58,55 @@ export const getButterflyById = async (req, res) => {
     }
 };
 
-// ✨ POST - Crear nueva mariposa
+// POST - Crear nueva mariposa
 export const createButterfly = async (req, res) => {
     try {
-        // Verificar errores de validación
+        // Verificar errores de validación (vienen del middleware validator en routes)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            // Si hay errores, devolverlos al cliente
             return res.status(400).json({
                 success: false,
-                errors: errors.array()
+                message: 'Datos de entrada no válidos',
+                errors: errors.array() // Lista de todos los errores encontrados
             });
         }
         
-        // Convertir datos de camelCase a snake_case para la DB
-        const dbData = convertToDbFormat(req.body);
+        // Crear nueva mariposa en la base de datos
+        // req.body contiene todos los datos enviados por el cliente
+        const newButterfly = await ButterflyModel.create(req.body);
         
-        const newButterfly = await ButterflyModel.create(dbData);
-        
-        // Convertir respuesta a formato API
-        const formattedButterfly = convertToApiFormat(newButterfly);
-        
+        // Respuesta exitosa con el objeto creado
         res.status(201).json({
             success: true,
             message: 'Mariposa creada exitosamente',
-            data: formattedButterfly
+            data: newButterfly
         });
         
     } catch (error) {
         console.error('Error al crear mariposa:', error);
         
-        // Error de validación de Sequelize
+        // Manejo específico de errores de validación de Sequelize
         if (error.name === 'SequelizeValidationError') {
             return res.status(400).json({
                 success: false,
-                error: 'Error de validación',
+                error: 'Error de validación de base de datos',
                 details: error.errors.map(err => ({
-                    field: err.path,
-                    message: err.message
+                    field: err.path, // Campo que falló
+                    message: err.message // Mensaje del error
                 }))
             });
         }
         
+        // Error de duplicado (ej: nombre científico repetido)
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(409).json({
+                success: false,
+                error: 'Ya existe una mariposa con ese nombre científico'
+            });
+        }
+        
+        // Error genérico
         res.status(500).json({ 
             success: false,
             error: "Error interno del servidor al crear la mariposa" 
@@ -161,21 +114,22 @@ export const createButterfly = async (req, res) => {
     }
 };
 
-// 🔄 PUT - Actualizar mariposa por ID
+// PUT - Actualizar mariposa por ID
 export const updateButterfly = async (req, res) => {
     try {
         const { id } = req.params;
         
-        // Verificar errores de validación
+        // Verificar errores de validación (vienen del middleware validator en routes)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 success: false,
+                message: 'Datos de entrada no válidos',
                 errors: errors.array()
             });
         }
         
-        // Verificar si la mariposa existe
+        // Verificar si la mariposa existe antes de actualizar
         const butterfly = await ButterflyModel.findByPk(id);
         if (!butterfly) {
             return res.status(404).json({
@@ -184,32 +138,35 @@ export const updateButterfly = async (req, res) => {
             });
         }
         
-        // Convertir datos de camelCase a snake_case para la DB
-        const dbData = convertToDbFormat(req.body);
+        // Actualizar con los nuevos datos
+        await butterfly.update(req.body);
         
-        // Actualizar
-        await butterfly.update(dbData);
-        
-        // Convertir respuesta a formato API
-        const formattedButterfly = convertToApiFormat(butterfly);
-        
+        // Devolver la mariposa actualizada
         res.status(200).json({
             success: true,
             message: 'Mariposa actualizada exitosamente',
-            data: formattedButterfly
+            data: butterfly
         });
         
     } catch (error) {
         console.error('Error al actualizar mariposa:', error);
         
+        // Mismo manejo de errores que en create
         if (error.name === 'SequelizeValidationError') {
             return res.status(400).json({
                 success: false,
-                error: 'Error de validación',
+                error: 'Error de validación de base de datos',
                 details: error.errors.map(err => ({
                     field: err.path,
                     message: err.message
                 }))
+            });
+        }
+        
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(409).json({
+                success: false,
+                error: 'Ya existe una mariposa con ese nombre científico'
             });
         }
         
@@ -220,11 +177,12 @@ export const updateButterfly = async (req, res) => {
     }
 };
 
-// 🗑️ DELETE - Eliminar mariposa por ID
+// DELETE - Eliminar mariposa por ID
 export const deleteButterfly = async (req, res) => {
     try {
         const { id } = req.params;
         
+        // Buscar la mariposa antes de eliminar
         const butterfly = await ButterflyModel.findByPk(id);
         if (!butterfly) {
             return res.status(404).json({
@@ -233,8 +191,10 @@ export const deleteButterfly = async (req, res) => {
             });
         }
         
+        // Eliminar de la base de datos
         await butterfly.destroy();
         
+        // Confirmación de eliminación
         res.status(200).json({
             success: true,
             message: 'Mariposa eliminada exitosamente'
@@ -249,26 +209,25 @@ export const deleteButterfly = async (req, res) => {
     }
 };
 
-// 🌍 CONTROLADORES DE FILTRADO (BONUS)
+// CONTROLADORES DE FILTRADO (FUNCIONES BONUS)
 
-// GET mariposas por región
+// GET mariposas filtradas por región
 export const getButterflyByRegion = async (req, res) => {
     try {
+        // Obtener región de los parámetros de URL
         const { region } = req.params;
         
+        // Buscar solo mariposas de esa región
         const butterflies = await ButterflyModel.findAll({
-            where: { region },
-            order: [['common_name', 'ASC']]
+            where: { region }, // WHERE region = 'valor'
+            order: [['commonName', 'ASC']]
         });
-        
-        // Convertir a formato API
-        const formattedButterflies = butterflies.map(convertToApiFormat);
         
         res.status(200).json({
             success: true,
-            count: formattedButterflies.length,
-            region: region,
-            data: formattedButterflies
+            count: butterflies.length,
+            region: region, // Mostrar qué región se filtró
+            data: butterflies
         });
         
     } catch (error) {
@@ -280,24 +239,22 @@ export const getButterflyByRegion = async (req, res) => {
     }
 };
 
-// GET mariposas por familia
+// GET mariposas filtradas por familia
 export const getButterflyByFamily = async (req, res) => {
     try {
         const { family } = req.params;
         
+        // Buscar solo mariposas de esa familia
         const butterflies = await ButterflyModel.findAll({
-            where: { family },
-            order: [['common_name', 'ASC']]
+            where: { family }, // WHERE family = 'valor'
+            order: [['commonName', 'ASC']]
         });
-        
-        // Convertir a formato API
-        const formattedButterflies = butterflies.map(convertToApiFormat);
         
         res.status(200).json({
             success: true,
-            count: formattedButterflies.length,
-            family: family,
-            data: formattedButterflies
+            count: butterflies.length,
+            family: family, // Mostrar qué familia se filtró
+            data: butterflies
         });
         
     } catch (error) {
@@ -307,4 +264,4 @@ export const getButterflyByFamily = async (req, res) => {
             error: "Error interno del servidor" 
         });
     }
-}; 
+};

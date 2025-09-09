@@ -1,6 +1,7 @@
 import request from 'supertest';
-import { app, server } from '../app.js';
+import { app } from '../app.js';
 import ButterflyModel from '../models/ButterflyModel.js';
+import db_connection from '../database/db_connection.js';
 
 // Datos de prueba usando tu formato JSON
 const testButterfly = {
@@ -29,20 +30,46 @@ const testButterfly = {
     publicId: "test_butterfly_id"
 };
 
-describe('🦋 Butterfly API Tests', () => {
+describe('Butterfly API Tests', () => {
     let butterflyId;
 
-    // Limpiar base de datos antes de las pruebas
+    // Setup antes de todas las pruebas
     beforeAll(async () => {
-        await ButterflyModel.sync({ force: true });
+        try {
+            // Conectar a la base de datos de testing
+            await db_connection.authenticate();
+            
+            // Sincronizar modelo (crear tabla si no existe)
+            await ButterflyModel.sync({ force: true }); // force: true limpia datos previos
+            
+            console.log('Test database setup complete');
+        } catch (error) {
+            console.error('Test setup failed:', error);
+            throw error;
+        }
     });
 
-    // Cerrar servidor después de las pruebas
+    // Cleanup después de todas las pruebas
     afterAll(async () => {
-        await server.close();
+        try {
+            // Cerrar conexión a la base de datos
+            await db_connection.close();
+            console.log('Test database connection closed');
+        } catch (error) {
+            console.error('Test cleanup failed:', error);
+        }
     });
 
-    // 📋 TESTS DE LECTURA (GET)
+    // Limpiar datos entre cada test
+    beforeEach(async () => {
+        try {
+            await ButterflyModel.destroy({ where: {}, truncate: true });
+        } catch (error) {
+            console.error('Test data cleanup failed:', error);
+        }
+    });
+
+    // TESTS DE LECTURA (GET)
     describe('GET /butterflies', () => {
         test('Debería obtener todas las mariposas', async () => {
             const response = await request(app)
@@ -56,7 +83,7 @@ describe('🦋 Butterfly API Tests', () => {
         });
     });
 
-    // ✨ TESTS DE CREACIÓN (POST)
+    // TESTS DE CREACIÓN (POST)
     describe('POST /butterflies', () => {
         test('Debería crear una nueva mariposa', async () => {
             const response = await request(app)
@@ -79,6 +106,7 @@ describe('🦋 Butterfly API Tests', () => {
             const invalidButterfly = {
                 commonName: '', // Campo obligatorio vacío
                 scientificName: 'Test'
+                // Faltan campos obligatorios como family, region, threatLevel
             };
 
             const response = await request(app)
@@ -105,11 +133,32 @@ describe('🦋 Butterfly API Tests', () => {
                 .expect(400);
 
             expect(response.body).toHaveProperty('success', false);
+            expect(response.body).toHaveProperty('errors');
+        });
+
+        test('Debería validar color hexadecimal', async () => {
+            const butterflyWithInvalidColor = {
+                ...testButterfly,
+                colorPrimary: "invalid-color" // No es formato hexadecimal
+            };
+
+            const response = await request(app)
+                .post('/butterflies')
+                .send(butterflyWithInvalidColor)
+                .expect(400);
+
+            expect(response.body).toHaveProperty('success', false);
         });
     });
 
-    // 📋 TESTS DE LECTURA POR ID
+    // TESTS DE LECTURA POR ID
     describe('GET /butterflies/:id', () => {
+        beforeEach(async () => {
+            // Crear una mariposa para los tests
+            const butterfly = await ButterflyModel.create(testButterfly);
+            butterflyId = butterfly.id;
+        });
+
         test('Debería obtener una mariposa por ID', async () => {
             const response = await request(app)
                 .get(`/butterflies/${butterflyId}`)
@@ -133,8 +182,13 @@ describe('🦋 Butterfly API Tests', () => {
         });
     });
 
-    // 🔄 TESTS DE ACTUALIZACIÓN (PUT)
+    // TESTS DE ACTUALIZACIÓN (PUT)
     describe('PUT /butterflies/:id', () => {
+        beforeEach(async () => {
+            const butterfly = await ButterflyModel.create(testButterfly);
+            butterflyId = butterfly.id;
+        });
+
         test('Debería actualizar una mariposa', async () => {
             const updatedData = {
                 ...testButterfly,
@@ -151,12 +205,16 @@ describe('🦋 Butterfly API Tests', () => {
             expect(response.body).toHaveProperty('success', true);
             expect(response.body.data).toHaveProperty('commonName', 'Mariposa Monarca Actualizada');
             expect(response.body.data).toHaveProperty('wingspan', 12.0);
-            expect(response.body.data.tags).toContain('actualizada');
+            expect(response.body.data.tags).toEqual(expect.arrayContaining(['actualizada']));
         });
     });
 
-    // 🌍 TESTS DE FILTRADO
+    // TESTS DE FILTRADO
     describe('GET /butterflies/region/:region', () => {
+        beforeEach(async () => {
+            await ButterflyModel.create(testButterfly);
+        });
+
         test('Debería obtener mariposas por región', async () => {
             const response = await request(app)
                 .get('/butterflies/region/América del Norte')
@@ -169,6 +227,10 @@ describe('🦋 Butterfly API Tests', () => {
     });
 
     describe('GET /butterflies/family/:family', () => {
+        beforeEach(async () => {
+            await ButterflyModel.create(testButterfly);
+        });
+
         test('Debería obtener mariposas por familia', async () => {
             const response = await request(app)
                 .get('/butterflies/family/Nymphalidae')
@@ -180,8 +242,13 @@ describe('🦋 Butterfly API Tests', () => {
         });
     });
 
-    // 🗑️ TESTS DE ELIMINACIÓN (DELETE)
+    // TESTS DE ELIMINACIÓN (DELETE)
     describe('DELETE /butterflies/:id', () => {
+        beforeEach(async () => {
+            const butterfly = await ButterflyModel.create(testButterfly);
+            butterflyId = butterfly.id;
+        });
+
         test('Debería eliminar una mariposa', async () => {
             const response = await request(app)
                 .delete(`/butterflies/${butterflyId}`)
@@ -192,6 +259,10 @@ describe('🦋 Butterfly API Tests', () => {
         });
 
         test('Debería retornar 404 al intentar eliminar mariposa inexistente', async () => {
+            // Primero eliminar la mariposa
+            await request(app).delete(`/butterflies/${butterflyId}`);
+            
+            // Intentar eliminarla de nuevo
             const response = await request(app)
                 .delete(`/butterflies/${butterflyId}`)
                 .expect(404);
