@@ -1,6 +1,7 @@
 // Importamos lo necesario
-import { DataTypes} from "sequelize";
+import { DataTypes } from "sequelize";
 import db_connection from "../database/db_connection.js";
+
 const ButterflyModel = db_connection.define('Butterfly', {
     // id de la mariposa
     id:{
@@ -19,7 +20,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     scientificName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true 
+        unique: true
     }, 
     //Familia
     // Obligatorio
@@ -28,7 +29,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
         allowNull: false
     },
     //region de la mariposa
-    // Region 
+    // Region   
     region:{
         type: DataTypes.STRING, 
         allowNull:false
@@ -44,7 +45,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
         allowNull: true
     },
     // Tamaño de la ala de la mariposa (es un numero)
-    winspan:{
+    wingspan:{
         type: DataTypes.DECIMAL(3,2),
         allowNull: true
     },
@@ -68,7 +69,6 @@ const ButterflyModel = db_connection.define('Butterfly', {
     threatLevel:{
         type: DataTypes.STRING,
         allowNull: false
-        
     },
     // cantidad actual de la mariposa
     population:{
@@ -126,10 +126,8 @@ const ButterflyModel = db_connection.define('Butterfly', {
     // Es para colocar la foto de la mariposa (se coloca como con uncodigo que le da cloudinary)
     publicId:{
         type: DataTypes.STRING, 
-        allowNull:true   
-
     }
 
 });
 
-export default ButterflyModel
+export default ButterflyModel;
