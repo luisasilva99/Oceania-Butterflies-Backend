@@ -46,7 +46,7 @@ const ButterflyModel = db_connection.define('Butterfly', {
     },
     // Tamaño de la ala de la mariposa (es un numero)
     wingspan:{
-        type: DataTypes.DECIMAL(3,2),
+        type: DataTypes.FLOAT(5,2),
         allowNull: true
     },
     // Unidad de medida de la ala de la mariposa (cm, mm, m, etc)
