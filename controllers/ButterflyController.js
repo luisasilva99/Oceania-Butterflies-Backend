@@ -67,6 +67,7 @@ export const updateButterfly = async(req, res) => {
         const butterfly = await ButterflyModel.findByPk(id);
         return res.status(200).json({ message: "Butterfly updated successfully", butterfly });
     } catch (error) {
+        console.error("ERROR en updateButterfly", error)
         res.status(500).json({ message: "Server error", error})
     }
 }

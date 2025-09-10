@@ -440,7 +440,7 @@ export const validarUpdateButterfly = (req, res, next) => {
     
     // Si viene familia, la revisamos
     if (datosDelUsuario.family !== undefined) {
-        const error = checkTextField(datosDelUsuario.family, 'familia', false, 2, 50);
+        const error = revisarCampoTexto(datosDelUsuario.family, 'familia', false, 2, 50);
         if (error) errores.push({ campo: 'family', mensaje: error });
     }
     
