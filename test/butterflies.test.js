@@ -124,7 +124,61 @@ describe('Oceania-Butterflies-Backend', () => {
         });
     });
 
+//UPDATE BUTTERFLY
+describe('PUT /butterflies/:id', () => {
+  let createdButterfly;
+  let updatedData;
+  let response;
+
+  beforeEach(async () => {
+    // Creamos una mariposa en la DB para actualizar
+    createdButterfly = await ButterflyModel.create({
+      commonName: "Test butterfly PUT",
+      scientificName: `Test butterfly PUT ${Date.now()}`,
+      family: "Test butterfly PUT",
+      region: "Test butterfly PUT",
+      threatLevel: "Low"
+    });
+
+    updatedData = {
+      commonName: "Updated butterfly",
+      scientificName: `Updated butterfly ${Date.now()}`,
+      family: "Updated Family",
+      region: "Australia",
+      threatLevel: "Vulnerable"
+    };
+
+    // Hacemos la request PUT
+    response = await request(app)
+      .put(`/butterflies/${createdButterfly.id}`)
+      .send(updatedData);
+  });
+
+  test('Should return a response with status 200 and type json', () => {
+    expect(response.status).toBe(200);
+    expect(response.headers['content-type']).toContain('json');
+  });
+
+  test('Should return the updated butterfly with correct data', () => {
+    expect(response.body).toHaveProperty('butterfly');
+    expect(response.body.butterfly.id).toBe(createdButterfly.id);
+    expect(response.body.butterfly.commonName).toBe(updatedData.commonName);
+    expect(response.body.butterfly.scientificName).toBe(updatedData.scientificName);
+    expect(response.body.butterfly.family).toBe(updatedData.family);
+    expect(response.body.butterfly.region).toBe(updatedData.region);
+    expect(response.body.butterfly.threatLevel).toBe(updatedData.threatLevel);
+  });
+
+  afterEach(async () => {
+    // Limpieza: borramos la mariposa de la DB
+    await ButterflyModel.destroy({ where: { id: createdButterfly.id } });
+  });
+});
+
+
     afterAll(async () => {
+        
         await db_connection.close();
+        server.close();
     });
 });
