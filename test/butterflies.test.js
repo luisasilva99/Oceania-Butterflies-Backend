@@ -100,7 +100,7 @@ describe('Oceania-Butterflies-Backend', () => {
         beforeEach(async () => { // Crea una mariposa con datos de prueba
             newButterflyData = {
                 commonName: "Test butterfly CREATE",
-                scientificName: `Test butterfly CREATE ${Date.now()}`, // Debe ser un dato único por eso dejamos Date.now()
+                scientificName: `Test butterfly CREATE ${Date.now()}`, // Debe ser un dato Ãºnico por eso dejamos Date.now()
                 family: "Test butterfly CREATE",
                 region: "Test butterfly CREATE",
                 threatLevel: "Test butterfly CREATE"
