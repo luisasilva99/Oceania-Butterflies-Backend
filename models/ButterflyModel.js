@@ -125,3 +125,4 @@ const ButterflyModel = db_connection.define('Butterfly', {
 });
 
 export default ButterflyModel;
+
