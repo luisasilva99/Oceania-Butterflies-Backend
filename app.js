@@ -1,10 +1,9 @@
-import express from "express";
-import butterflyRoutes from "./routes/butterflyRoutes.js";
-import db_connection from "./database/db_connection.js";
-import ButterflyModel from "./models/ButterflyModel.js";
-import cors from "cors"; // para permitir peticiones desde cualquier origen (el frontend)
+import express from 'express';
+import cors from 'cors';
+import db_connection from './database/db_connection.js';
+import butterflyRoutes from './routes/butterflyRoutes.js';
 
-export const app = express();
+const app = express();
 
 // Middleware
 app.use(cors()); //permite peticiones desde cualquier dominio
@@ -19,7 +18,7 @@ app.get("/", (req, res) => {
 // Rutas de la API
 app.use('/butterflies', butterflyRoutes); 
 
-// Middleware de manejo de errores (opcional pero recomendado)
+// Middleware de manejo de errores (opcional pero recomendado para producción segura y depuración en desarrollo)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -28,26 +27,34 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Ruta para manejar 404
-app.use('*', (req, res) => {
+// Ruta para manejar 404 - LÍNEA CORREGIDA antes había usado *, lo cual no es correcto en Express
+app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
 // Configuración de base de datos
-try {
-    await db_connection.authenticate(); // Autentica la conexión a la base de datos
-    console.log('🦋 Connected to database successfully!');
-    
-    await ButterflyModel.sync(); // Sincroniza el modelo con la base de datos
-    console.log('🦋 Butterfly model synchronized');
-    
-    await db_connection.sync(); // Sincroniza todos los modelos con la base de datos
-    console.log('🦋 All models synchronized');
-    
-} catch (error) {
-    console.error(`❌ Database error: ${error}`);
-    process.exit(1); // Termina la aplicación si no puede conectar a la DB
-}
+(async () => {
+  try {
+      await db_connection.authenticate();
+      console.log('✅ Connection established successfully.');
+      
+      // Determinar si estamos en modo test
+      const isTest = process.env.NODE_ENV === 'test' || 
+                     db_connection.config.database.includes('test');
+      
+      // En modo test, forzar la creación de tablas
+      const syncOptions = isTest ? { force: true } : { force: false };
+      
+      // Sincronizar todos los modelos
+      await db_connection.sync(syncOptions);
+      console.log('🦋 Database synchronized successfully');
+      
+  } catch (error) {
+      console.error(`❌ Database error: ${error}`);
+      // No cerramos la app automáticamente para evitar que Jest falle
+      // process.exit(1);
+  }
+})();
 
 // Configuración del puerto
 const PORT = process.env.PORT || 8000;
@@ -56,3 +63,5 @@ export const server = app.listen(PORT, () => {
   console.log(`🚀 Butterfly API server running on http://localhost:${PORT}/`);
   console.log(`📖 Access butterflies at http://localhost:${PORT}/butterflies`);
 });
+
+export { app };
