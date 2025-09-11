@@ -11,7 +11,7 @@ describe('Oceania-Butterflies-Backend', () => {
 });
     
 
-    // GET all butterflies
+    // GET all butterflies 
     describe('GET /butterflies', () => {
         let response;
         beforeEach(async () => {
