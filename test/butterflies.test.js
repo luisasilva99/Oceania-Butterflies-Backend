@@ -226,4 +226,3 @@ describe('PUT /butterflies (error cases)', () => {
     afterAll(async () => {
         await db_connection.close();
     });
-gt 
