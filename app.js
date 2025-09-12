@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 // Rutas de la API
 app.use('/butterflies', butterflyRoutes); 
 
-// Middleware de manejo de errores (opcional pero recomendado)
+// Middleware de manejo de errores (opcional pero recomendado para producción segura y depuración en desarrollo)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Ruta para manejar 404 - LÍNEA CORREGIDA
+// Ruta para manejar 404 - LÍNEA CORREGIDA antes había usado *, lo cual no es correcto en Express
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });

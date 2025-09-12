@@ -27,7 +27,7 @@ butterflyRoutes.get('/:id', getOneButterfly, validateOneButterfly)
 butterflyRoutes.post('/', createButterfly, validateCreateButterfly)
 
 // PUT - Actualizar una mariposa por ID
-butterflyRoutes.put('/:id', updateButterfly, validarUpdateButterfly)
+butterflyRoutes.put('/:id', validarUpdateButterfly, updateButterfly)
 
 // DELETE - Eliminar una mariposa por ID
 butterflyRoutes.delete('/:id', deleteButterfly, validateDeleteButterfly)
