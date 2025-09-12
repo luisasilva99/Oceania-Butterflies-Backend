@@ -13,13 +13,13 @@ export const getAllButterflies = async(req, res) => {
 //GET one butterfly
 export const getOneButterfly = async(req, res) => {
     try {
-        const { id } = req.params;  // sacamos el id de la URL
-        const butterfly = await ButterflyModel.findByPk(id)  // buscamos por la PK
+        const { id } = req.params;
+        const butterfly = await ButterflyModel.findByPk(id)
         
-        if (!butterfly) { //si NO existe
+        if (!butterfly) {
             return res.status(404).json({ message: "Butterfly not found"});
         }
-        res.status(200).json({ butterfly }); // si existe la enviamos
+        res.status(200).json(butterfly); // ✅ Sin envolver
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
@@ -55,17 +55,15 @@ export const createButterfly = async(req, res) => {
 //UPDATE one butterfly
 export const updateButterfly = async(req, res) => {
     try {
-        const { id } = req.params; // identifica la mariposa que hay que actualizar
+        const { id } = req.params;
         const [updated] = await ButterflyModel.update(req.body, { where: { id } });
 
-        //Si no se actualizó ninguna fila de la tabla
         if (updated === 0) {
             return res.status(404).json({ message: "Butterfly not found"});
         }
 
-        //Obtenemos el objeto actualizado
         const butterfly = await ButterflyModel.findByPk(id);
-        return res.status(200).json({ message: "Butterfly updated successfully", butterfly });
+        return res.status(200).json(butterfly); // ✅ Sin envolver
     } catch (error) {
         console.error("ERROR en updateButterfly", error)
         res.status(500).json({ message: "Server error", error})
