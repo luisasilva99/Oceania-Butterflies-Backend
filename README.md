@@ -115,7 +115,6 @@ Por defecto la API se expone en `http://localhost:8000/butterflies` (ajustable v
 - `PUT /butterflies/:id` – Actualiza una mariposa.
 - `DELETE /butterflies/:id` – Elimina una mariposa.
 
-
 ## Tests
 
 - Los tests están en `test/` y usan **Jest** + **Supertest**.
